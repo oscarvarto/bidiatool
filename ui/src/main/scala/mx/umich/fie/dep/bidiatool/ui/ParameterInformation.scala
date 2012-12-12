@@ -1,6 +1,6 @@
 package mx.umich.fie.dep.bidiatool.ui
 
-class ParameterInformation (
+class ParameterInformation(
   val name: String,
   val from: Double,
   val to: Double,

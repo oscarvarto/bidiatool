@@ -10,7 +10,7 @@ import java.awt.Dimension
 object ToolBar extends JToolBar {
   //val buttonSize = new Dimension(24, 24)
 
-  val newButton = new Button(newModelAction)
+  val newButton = new Button(newDiagramAction)
   newButton.text = ""
   newButton.icon = new ImageIcon("ui/src/main/resources/images/newdocMod.png")
   newButton.tooltip = "New Model..."

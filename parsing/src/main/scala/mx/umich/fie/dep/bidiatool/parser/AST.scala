@@ -13,6 +13,7 @@ object AST {
 
   var norms: List[Expr] = List.empty
   var normEvaluation = TreeMap.newBuilder[String, Double]
+  var varsInNorm: Set[String] = Set.empty
 
   case class DynamicalSystem(exprs: List[Expr]) {
     override def toString = exprs mkString "\n"
@@ -34,6 +35,7 @@ object AST {
         }
         case NormDefinition(norm, expr) ⇒ {
           normsAcc += e
+
         }
         case _ ⇒ e.eval
       }
@@ -86,11 +88,16 @@ object AST {
     }
   }
 
-  case class NormDefinition(norm: String, e: Expr) extends Expr {
+  //  trait CanSearchAlgVarsInNorm {
+  //    def search(): Unit
+  //  }
+  //  type ExprNorm = Expr with CanSearchAlgVarsInNorm
+  case class NormDefinition(norm: String, e: Expr) extends Expr { //with CanSearchAlgVarsInNorm {
     def eval = {
       normEvaluation += (norm -> e.eval)
       e.eval
     }
+    //def search() = e.search()
   }
 
   sealed abstract class BinaryOp extends Expr {
@@ -105,6 +112,10 @@ object AST {
       }
       case _ ⇒ error(this.getClass.getSimpleName + " requires two numeric values")
     }
+    //    def search() = {
+    //      e1.search()
+    //      e2.search()
+    //    }
   }
 
   case class Add(e1: Expr, e2: Expr) extends BinaryOp
@@ -118,6 +129,7 @@ object AST {
       case x: Double ⇒ -x
       case _         ⇒ error("Neg requires a numeric argument")
     }
+    //  def search() = e.search()
   }
 
   /** Function application. */
@@ -128,6 +140,7 @@ object AST {
       // ...
       case (f, x)             ⇒ error(f + " cannot be applied as a function to the argument " + x)
     }
+    //  def search() = arg.search()
   }
 
   /*
@@ -144,15 +157,16 @@ object AST {
   sealed abstract class Var extends Expr {
     val name: String
     def eval = env.get(name) match {
-      case Some(x) ⇒
-        println("Hello dummy")
-        x
-      case None ⇒ error("Variable " + name + " is unknown")
+      case Some(x) ⇒ x
+      case None    ⇒ error("Variable " + name + " is unknown")
     }
   }
 
   case class StateVar(name: String) extends Var
   case class AlgebraicVar(name: String) extends Var {
-    override def eval = env(name)
+    //override def eval = env(name)
+    //    override def search() {
+    //      varsInNorm += name
+    //    }
   }
 }

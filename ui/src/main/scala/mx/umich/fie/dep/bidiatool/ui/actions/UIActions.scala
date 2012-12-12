@@ -7,12 +7,12 @@ import scala.swing.Action
 
 import javax.swing.KeyStroke.getKeyStroke
 import mx.umich.fie.dep.bidiatool.ui.UserInterface
-import mx.umich.fie.dep.bidiatool.ui.dialogs.NewModelDialog
+import mx.umich.fie.dep.bidiatool.ui.dialogs.NewDiagramDialog
 
 object UIActions {
   val shortcutKey = Toolkit.getDefaultToolkit.getMenuShortcutKeyMask()
 
-  val newModelAction = new Action("New Model...") {
+  val newDiagramAction = new Action("New Diagram...") {
     accelerator = Some(getKeyStroke(VK_N, shortcutKey))
     def apply() = {
       //      val modelName: Option[String] =
@@ -29,7 +29,7 @@ object UIActions {
       //        case Some(name) ⇒ introduceModel()
       //        case None       ⇒
       //      }
-      NewModelDialog.open()
+      NewDiagramDialog.open()
     }
   }
 

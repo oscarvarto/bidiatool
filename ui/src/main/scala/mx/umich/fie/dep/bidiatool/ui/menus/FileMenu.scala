@@ -24,9 +24,9 @@ object FileMenu extends Menu(title0 = "File") {
   //   + saveModelItem
   //   + saveModelAsItem
   //   + exitItem
-  ////////// 
+  //////////
 
-  val newModelItem = new MenuItem(newModelAction)
+  val newModelItem = new MenuItem(newDiagramAction)
   newModelItem.mnemonic = Key.N
 
   val openModelItem = new MenuItem(openModelAction)

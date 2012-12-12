@@ -25,10 +25,10 @@ object Build extends Build {
         Dependencies.Compile.Swing
       )
     )
-  ) dependsOn(parsing)
-  
+  ) dependsOn(parsing, fixedPoints)
+
   import AddZipJar._
-  
+
   lazy val plotting = Project(
     id = "bidiatool-plotting",
     base = file("plotting"),
@@ -37,7 +37,7 @@ object Build extends Build {
       libraryDependencies ++= Seq(
         Dependencies.Compile.Swing,
         Dependencies.Compile.BreezeViz,
-        Dependencies.Compile.Jzy3d  
+        Dependencies.Compile.Jzy3d
       ),
       mergeStrategy in assembly <<= (mergeStrategy in assembly) { old ⇒
         {
@@ -52,7 +52,7 @@ object Build extends Build {
   lazy val fixedPoints = Project(
     id = "bidiatool-fixed-points",
     base = file("fixedPoints"),
-    settings = commonSettings ++ 
+    settings = commonSettings ++
     Seq(
       libraryDependencies ++= Seq(
         Dependencies.Compile.Cilib,
@@ -80,7 +80,7 @@ object Build extends Build {
   //       "de.sciss" %% "scalainterpreterpane" % "0.21"
   //     )
   //   )
-  // ) 
+  // )
 
   lazy val stability = Project(
     id = "bidiatool-stability",
@@ -103,8 +103,8 @@ object Build extends Build {
     .setPreference(PlaceScaladocAsterisksBeneathSecondAsterisk, true)
   }
 
-  def commonSettings = 
-    Defaults.defaultSettings ++ 
+  def commonSettings =
+    Defaults.defaultSettings ++
     formatSettings ++
     Seq(
       organization := "mx.umich.fie.dep",
@@ -130,7 +130,7 @@ object Build extends Build {
 
     object Compile {
       val Config = "com.typesafe" % "config" % "0.5.2"
-      val ScalazCore = "org.scalaz" %% "scalaz-core" % "7.0.0-M3" cross CrossVersion.full
+      val ScalazCore = "org.scalaz" %% "scalaz-core" % "7.0.0-M5" cross CrossVersion.full
       val Swing = "org.scala-lang" % "scala-swing" % "2.9.2"
       val BreezeMath = "org.scalanlp" %% "breeze-math" % "0.1"
       val BreezeViz  = "org.scalanlp" %% "breeze-viz" % "0.1"
@@ -158,14 +158,14 @@ object AddZipJar extends Plugin {
       (updateReport, cache, target) =>
       val moduleReports = updateReport.configuration(config.name).get.modules
       moduleReports.find(mr => (mr.module.organization, mr.module.name) == (module.organization, module.name)) match {
-	case Some(x) =>
-	val zipFile = x.artifacts.head._2	
-	val cachedUnzip = FileFunction.cached(cache / "zipJar", inStyle = FilesInfo.lastModified, outStyle = FilesInfo.exists) { (in: Set[File]) =>
+        case Some(x) =>
+        val zipFile = x.artifacts.head._2
+        val cachedUnzip = FileFunction.cached(cache / "zipJar", inStyle = FilesInfo.lastModified, outStyle = FilesInfo.exists) { (in: Set[File]) =>
           IO.unzip(in.head, target)
-	}
-	cachedUnzip(Set(zipFile)).toSeq
-	case None =>
-	sys.error("could not find artifact [%s] in [%s]".format(module, moduleReports.map(_.module).mkString("\n")))
+        }
+        cachedUnzip(Set(zipFile)).toSeq
+        case None =>
+        sys.error("could not find artifact [%s] in [%s]".format(module, moduleReports.map(_.module).mkString("\n")))
       }
     }
   )

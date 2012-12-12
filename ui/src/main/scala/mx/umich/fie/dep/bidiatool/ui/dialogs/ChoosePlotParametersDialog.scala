@@ -9,6 +9,11 @@ import scala.swing.GridBagPanel._
 import scala.swing.event.ButtonClicked
 import scala.swing.Dialog._
 
+import scalaz.syntax.std.string._
+import scalaz.syntax.traverse._
+import scalaz.std.list._
+import scalaz.ValidationNEL
+
 import mx.umich.fie.dep.bidiatool.ui.UserInterface
 import mx.umich.fie.dep.bidiatool.ui.ParameterInformation
 
@@ -22,7 +27,7 @@ class ChoosePlotParametersDialog extends Frame { fr ⇒
 
   val rangeFrom = new TextField("", 10)
   val rangeTo = new TextField("", 10)
-  val stepTextField = new TextField("", 20)
+  val step = new TextField("", 20)
 
   lazy val paramInfo = new GridBagPanel {
     val c = new Constraints
@@ -64,24 +69,29 @@ class ChoosePlotParametersDialog extends Frame { fr ⇒
     c.gridx = 1
     c.gridwidth = 3
     c.gridy = 1
-    layout(stepTextField) = c
+    layout(step) = c
   }
 
   val applyButton = new Button("Apply") {
     // validate input!!!
     reactions += {
       case ButtonClicked(_) ⇒
-      	val name = combo.getSelectedItem().asInstanceOf[String]
-        try {
-          val from = rangeFrom.text.toDouble
-          val to = rangeTo.text.toDouble
-          val step = stepTextField.text.toDouble
-          val parInfo = new ParameterInformation(name, from, to, step)
-          println(parInfo)
-          UserInterface.CurrentModel.paramsInfo += parInfo
-        } catch {
-          case ex: NumberFormatException => showMessage(paramInfo, "From, To and Step must be numbers")
-        }
+        val name = combo.getSelectedItem().asInstanceOf[String]
+        val maybeStringNums = List(rangeFrom.text, rangeTo.text, step.text)
+        type VNELD[A] = ValidationNEL[NumberFormatException, A]
+        val maybeNums = maybeStringNums.traverse[VNELD, Double](_.parseDouble.toValidationNEL)
+        maybeNums.fold(
+          nelNFE ⇒ showMessage(paramInfo, "From, To and Step must be numbers" + nelNFE),
+          nums ⇒ UserInterface.paramsInfo += new ParameterInformation(name, nums(0), nums(1), nums(2)))
+      //        try {
+      //          val from = rangeFrom.text.toDouble
+      //          val to = rangeTo.text.toDouble
+      //          val step = stepTextField.text.toDouble
+      //          val parInfo = new ParameterInformation(name, from, to, step)
+      //          UserInterface.paramsInfo += parInfo
+      //        } catch {
+      //          case ex: NumberFormatException ⇒ showMessage(paramInfo, "From, To and Step must be numbers")
+      //        }
     }
   }
 
@@ -95,19 +105,7 @@ class ChoosePlotParametersDialog extends Frame { fr ⇒
   val selectionContainer = new BoxPanel(Orientation.Vertical) {
     contents += instructions
     contents += Component.wrap(combo)
-    contents += paramInfo
+    contents ++= List(paramInfo, applyButton, nextButton)
   }
   contents = selectionContainer
-
-  // Crear un frame que contenga
-  // una forma de escoger a lo más dos parámetros
-  // Si puso dos normas sólo puede escoger un parámetro
-  // Si puso una norma puede escoger hasta dos parámetros
-
-  //    val onlyOneParameter = if (AST.norms.length == 2) true else false
-  //    if (onlyOneParameter || AST.params.length == 1) {
-  //      val fr = chooseOneParameterFrame()
-  //      println("Chosen: " + UserInterface.holo)
-  //    }
-  //size = new Dimension(400, 600)
 }

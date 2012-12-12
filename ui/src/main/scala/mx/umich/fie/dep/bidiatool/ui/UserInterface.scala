@@ -22,10 +22,9 @@ object Dimensions {
 }
 
 object UserInterface extends SimpleSwingApplication {
-  object CurrentModel {
-    var dynamicalSystem: DynamicalSystem = _
-    var paramsInfo: ListBuffer[ParameterInformation] = new ListBuffer
-  }
+  var currentProject: Project = _
+
+  var paramsInfo: ListBuffer[ParameterInformation] = new ListBuffer
 
   // This is the main frame of the application
   val frame = new MainFrame {
