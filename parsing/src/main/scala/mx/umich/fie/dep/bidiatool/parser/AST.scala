@@ -88,16 +88,18 @@ object AST {
     }
   }
 
-  //  trait CanSearchAlgVarsInNorm {
-  //    def search(): Unit
-  //  }
-  //  type ExprNorm = Expr with CanSearchAlgVarsInNorm
-  case class NormDefinition(norm: String, e: Expr) extends Expr { //with CanSearchAlgVarsInNorm {
+  trait CanSearchAlgVarsInNorm {
+    def search(): Unit
+  }
+  
+  implicit def ToCanSearchAlVarsInNorm(e: Expr) = e.asInstanceOf[CanSearchAlgVarsInNorm]
+  
+  case class NormDefinition(norm: String, e: Expr) extends Expr with CanSearchAlgVarsInNorm {
     def eval = {
       normEvaluation += (norm -> e.eval)
       e.eval
     }
-    //def search() = e.search()
+    def search() = e.search()
   }
 
   sealed abstract class BinaryOp extends Expr {
