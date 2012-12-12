@@ -1,0 +1,24 @@
+*.class
+*.jar
+*~
+
+#sbt
+/project/target
+/project/project/target
+
+/target/
+/*/target/
+
+#other
+/data/
+/docs/
+
+#eclipse, ensime
+*.classpath
+*.project
+*.cache
+*.settings
+.ensime
+.ensime_lucene/
+
+*DS_Store

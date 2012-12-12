@@ -67,21 +67,6 @@ object Build extends Build {
     settings = commonSettings
   )
 
-  // Este proyecto hay que actualizarlo para que dependa de BreezeMath y no de Scalala
-  // Scalala has been superseded by Breeze
-  // lazy val stability = Project(
-  //   id = "bidiatool-stability",
-  //   base = file("stability"),
-  //   settings = commonSettings ++
-  //   Seq(
-  //     resolvers ++= Seq("Clojars Repository" at "http://clojars.org/repo"),
-  //     libraryDependencies ++= Seq(
-  //       "org.scalala" %% "scalala" % "1.0.0.RC3-SNAPSHOT",
-  //       "de.sciss" %% "scalainterpreterpane" % "0.21"
-  //     )
-  //   )
-  // )
-
   lazy val stability = Project(
     id = "bidiatool-stability",
     base = file("stability"),
@@ -126,19 +111,17 @@ object Build extends Build {
     assemblySettings
 
   object Dependencies {
-    //val arch = "macosx" // "windows-amd64" "windows-i586" "linux-amd64" "linux-i586"
-
     object Compile {
-      val Config = "com.typesafe" % "config" % "0.5.2"
-      val ScalazCore = "org.scalaz" %% "scalaz-core" % "7.0.0-M5" cross CrossVersion.full
+      val ScalazCore = "org.scalaz" %% "scalaz-core" % "7.0.0-M6" cross CrossVersion.full withSources()
       val Swing = "org.scala-lang" % "scala-swing" % "2.9.2"
       val BreezeMath = "org.scalanlp" %% "breeze-math" % "0.1"
       val BreezeViz  = "org.scalanlp" %% "breeze-viz" % "0.1"
       val Jzy3d = "org.jzy3d" % "jzy3d" % "0.9" from "http://www.jzy3d.org/release/0.9/org.jzy3d-0.9.jar"
       val Jzy3dDeps = "org.jzy3d" % "jzy3d-deps" % "0.9" from "http://www.jzy3d.org/release/0.9/org.jzy3d-0.9-dependencies.zip"
-      val Cilib = "net.cilib" %% "library" % "0.7.5"
+      val Cilib = "net.cilib" %% "library" % "0.7.5" withSources()
       val Simulator = "simulator" %% "simulator" % "0.7.5"
     }
+
 
     object Test {
       val Specs2 = "org.specs2" %% "specs2" % "1.12.1" % "test" cross CrossVersion.full
