@@ -3,8 +3,7 @@ package mx.umich.fie.dep.functions.continuous
 import net.sourceforge.cilib.functions.ContinuousFunction
 import java.lang.{ Double ⇒ JDouble }
 import net.sourceforge.cilib.`type`.types.container.{ Vector ⇒ CilibVector }
-import mx.umich.fie.dep.bidiatool.parser.AST
-import AST.DynamicalSystem
+import mx.umich.fie.dep.bidiatool.parser.DynamicalSystem
 import breeze.linalg.DenseVector
 import scala.collection.mutable.ArrayBuffer
 
@@ -12,7 +11,7 @@ class StateVarVectorNorm(
   dsy: DynamicalSystem,
   keys: List[String], // cambiar keys por variables que debe ser una lista de nombres ordenados
   pars: Map[String, Double])
-  extends ContinuousFunction {
+    extends ContinuousFunction {
   implicit def toArrayDouble(a: Array[JDouble]) = a.asInstanceOf[Array[Double]]
 
   override def apply(input: CilibVector): JDouble = {
@@ -23,8 +22,8 @@ class StateVarVectorNorm(
     }
 
     val data: Map[String, Double] = (keys, inp).zipped.toMap ++ pars
-    dsy.eval(data)
-    val a = AST.evaluation.result.values.toArray
+
+    val a = dsy.eval(data)
     val g = DenseVector(a).norm(2)
     return g
   }

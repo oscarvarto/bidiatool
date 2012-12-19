@@ -25,10 +25,11 @@ object ParsingTest {
       if (res.successful) {
         val eqSystem = res.get
         //eqSystem.init()
-        println(AST.variables)
-        eqSystem.eval(data)
-        eqSystem.evalNorm(data)
-        Some(AST.evaluation.result, AST.normEvaluation.result)
+        //println(AST.variables)
+        Some(eqSystem.eval(data))
+        //eqSystem.evalNorm(data)
+        //Some(AST.evaluation.result, AST.normEvaluation.result)
+        //
       } else
         None
 

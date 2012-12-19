@@ -1,20 +1,19 @@
 package mx.umich.fie.dep.bidiatool.ui.dialogs
 
 import java.awt.Dimension
-
 import scala.swing.{ Frame, Label, SplitPane, Swing, TextArea }
 import scala.swing.BorderPanel
 import scala.swing.BorderPanel.Position.{ Center, North, South }
 import scala.swing.Button
 import scala.swing.Dialog.{ Message, showMessage }
 import scala.swing.event.ButtonClicked
+import scala.collection.JavaConverters._
 
-import mx.umich.fie.dep.bidiatool.parser.AST
-import mx.umich.fie.dep.bidiatool.parser.AST.DynamicalSystem
+import mx.umich.fie.dep.bidiatool.parser.DynamicalSystem
 import mx.umich.fie.dep.bidiatool.parser.Parser
 import mx.umich.fie.dep.bidiatool.ui.Dimensions.b
 import mx.umich.fie.dep.bidiatool.ui.UserInterface
-import collection.JavaConverters._
+import mx.umich.fie.dep.bidiatool.ui.Project
 
 object NewDiagramDialog extends Frame { fr ⇒
   val instructions = new Label("Type your dynamical system, please.")
@@ -39,8 +38,11 @@ object NewDiagramDialog extends Frame { fr ⇒
           None
 
         maybeDSy match {
-          case Some(dsy) ⇒
-            val params = AST.params
+          case maybeDsy @ Some(dsy) ⇒
+            val namelessProject = new Project("nameless")
+          	namelessProject.maybeDynamicalSystem = maybeDsy
+          	UserInterface.maybeCurrentProject = Some(namelessProject)
+          	val params = dsy.namesParameters
             choose1.options.addAll(params.asJava)
             choose1.open()
             fr.dispose()
@@ -64,6 +66,7 @@ object NewDiagramDialog extends Frame { fr ⇒
   reactions += {
     case ButtonClicked(choose1.nextButton) ⇒
       val parInfo = UserInterface.paramsInfo
+      val numberParamsCurrentProject = UserInterface.maybeCurrentProject
       val maybeTwoParameters = if (AST.params.length >= 1 && AST.norms.length < 2) true else false
       if (parInfo.length == 1 && maybeTwoParameters) {
         val alreadyChosen = parInfo(0).name

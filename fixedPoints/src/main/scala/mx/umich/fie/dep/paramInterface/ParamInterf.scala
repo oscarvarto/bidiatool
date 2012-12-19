@@ -1,8 +1,7 @@
 package mx.umich.fie.dep.paramInterface
 
 import breeze.linalg.DenseVector
-import mx.umich.fie.dep.bidiatool.parser.AST
-import mx.umich.fie.dep.bidiatool.parser.AST.DynamicalSystem
+import mx.umich.fie.dep.bidiatool.parser.DynamicalSystem
 import mx.umich.fie.dep.functions.continuous.StateVarVectorNorm
 import mx.umich.fie.dep.simulator.Simulation
 import net.sourceforge.cilib.algorithm.Algorithm

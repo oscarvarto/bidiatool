@@ -10,7 +10,7 @@ import Dimensions.b
 import containers.{ BifurcationDiagramContainer, InformationContainer, ModelsContainer }
 import menus.{ DiagramMenu, FileMenu }
 import toolbar.ToolBar
-import mx.umich.fie.dep.bidiatool.parser.AST.DynamicalSystem
+import mx.umich.fie.dep.bidiatool.parser.DynamicalSystem
 import scala.collection.mutable.ListBuffer
 
 object Dimensions {
@@ -22,7 +22,7 @@ object Dimensions {
 }
 
 object UserInterface extends SimpleSwingApplication {
-  var currentProject: Project = _
+  var maybeCurrentProject: Option[Project] = None
 
   var paramsInfo: ListBuffer[ParameterInformation] = new ListBuffer
 
